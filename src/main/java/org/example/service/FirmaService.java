@@ -47,7 +47,11 @@ public class FirmaService {
     @Value("${SRI_CERTIFICATE_PASSWORD}")
     private String passwordCert;
 
-    private static final String XSD_PATH = "/xsd/factura.xsd";
+    private String obtenerXSD(String xml) {
+    if (xml.contains("<factura")) return "/xsd/factura.xsd";
+    if (xml.contains("<notaCredito")) return "/xsd/notaCredito.xsd";
+    return "/xsd/factura.xsd";
+    }
 
     private static final String DS_NS = "http://www.w3.org/2000/09/xmldsig#";
     private static final String XADES_NS = "http://uri.etsi.org/01903/v1.3.2#";
@@ -67,9 +71,18 @@ public class FirmaService {
 
             // 1) Asegurar schemaLocation (opcional pero recomendado si validas XSD)
             if (!xml.contains("xsi:noNamespaceSchemaLocation")) {
-                xml = xml.replace("<factura",
-                        "<factura xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
-                                "xsi:noNamespaceSchemaLocation=\"factura.xsd\"");
+
+            if (xml.contains("<factura")) {
+            xml = xml.replace("<factura",
+                "<factura xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
+                "xsi:noNamespaceSchemaLocation=\"factura.xsd\"");
+            }
+
+            if (xml.contains("<notaCredito")) {
+            xml = xml.replace("<notaCredito",
+                "<notaCredito xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
+                "xsi:noNamespaceSchemaLocation=\"notaCredito.xsd\"");
+                }
             }
 
             // 2) Validación XSD (si tu XSD está correcto en /resources/xsd/factura.xsd)
@@ -274,15 +287,17 @@ public class FirmaService {
     // ===================== VALIDACIÓN XSD =====================
 
     private void validarContraXSD(String xml) throws Exception {
-        log.info("🔍 Validando XML contra XSD factura.xsd");
+    log.info("🔍 Validando XML contra XSD dinámico");
 
-        Schema schema = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema")
-                .newSchema(new StreamSource(getClass().getResourceAsStream(XSD_PATH)));
+    String xsdPath = obtenerXSD(xml);
 
-        Validator validator = schema.newValidator();
-        validator.validate(new StreamSource(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))));
+    Schema schema = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema")
+            .newSchema(new StreamSource(getClass().getResourceAsStream(xsdPath)));
 
-        log.info("✔ XML válido contra XSD");
+    Validator validator = schema.newValidator();
+    validator.validate(new StreamSource(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))));
+
+    log.info("✔ XML válido contra XSD: {}", xsdPath);
     }
 
     // ===================== DOM → STRING =====================
