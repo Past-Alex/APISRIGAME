@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+
+    <xs:element name="notaCredito">
+        <xs:complexType>
+            <xs:sequence>
+
+                <!-- INFO TRIBUTARIA -->
+                <xs:element name="infoTributaria">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ambiente" type="xs:string"/>
+                            <xs:element name="tipoEmision" type="xs:string"/>
+                            <xs:element name="razonSocial" type="xs:string"/>
+                            <xs:element name="nombreComercial" type="xs:string" minOccurs="0"/>
+                            <xs:element name="ruc" type="xs:string"/>
+                            <xs:element name="claveAcceso" type="xs:string"/>
+                            <xs:element name="codDoc" type="xs:string"/>
+                            <xs:element name="estab" type="xs:string"/>
+                            <xs:element name="ptoEmi" type="xs:string"/>
+                            <xs:element name="secuencial" type="xs:string"/>
+                            <xs:element name="dirMatriz" type="xs:string"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+                <!-- INFO NOTA CREDITO -->
+                <xs:element name="infoNotaCredito">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="fechaEmision" type="xs:string"/>
+                            <xs:element name="dirEstablecimiento" type="xs:string"/>
+                            <xs:element name="tipoIdentificacionComprador" type="xs:string"/>
+                            <xs:element name="razonSocialComprador" type="xs:string"/>
+                            <xs:element name="identificacionComprador" type="xs:string"/>
+                            <xs:element name="totalSinImpuestos" type="xs:decimal"/>
+                            <xs:element name="valorModificacion" type="xs:decimal"/>
+                            <xs:element name="moneda" type="xs:string"/>
+
+                            <!-- REFERENCIA -->
+                            <xs:element name="codDocModificado" type="xs:string"/>
+                            <xs:element name="numDocModificado" type="xs:string"/>
+                            <xs:element name="fechaEmisionDocSustento" type="xs:string"/>
+
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+                <!-- DETALLES -->
+                <xs:element name="detalles">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="detalle" maxOccurs="1000">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="descripcion" type="xs:string"/>
+                                        <xs:element name="cantidad" type="xs:decimal"/>
+                                        <xs:element name="precioUnitario" type="xs:decimal"/>
+                                        <xs:element name="descuento" type="xs:decimal"/>
+                                        <xs:element name="precioTotalSinImpuesto" type="xs:decimal"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+                <!-- MOTIVOS -->
+                <xs:element name="motivos">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="motivo" maxOccurs="10">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="razon" type="xs:string"/>
+                                        <xs:element name="valor" type="xs:decimal"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+                <!-- OPCIONAL -->
+                <xs:element name="infoAdicional" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="campoAdicional" maxOccurs="50" minOccurs="0">
+                                <xs:complexType mixed="true">
+                                    <xs:attribute name="nombre" type="xs:string" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+            </xs:sequence>
+
+            <xs:attribute name="version" type="xs:string" fixed="1.0.0"/>
+            <xs:attribute name="id" type="xs:string"/>
+
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
